@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grand Line Log</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Special+Elite&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --parchment:#f2e2b8;
+    --parchment-deep:#e8d29e;
+    --panel:#fbf1d9;
+    --panel-soft:#f6e9c8;
+    --ink:#2b1a0e;
+    --ink-soft:#6b5334;
+    --ink-faint:#a4906a;
+    --navy:#0f2a4a;
+    --navy-deep:#081c33;
+    --gold:#d4a017;
+    --gold-bright:#f4c430;
+    --red:#c0272d;
+    --border:#c9a969;
+    --str:#c0272d;
+    --vit:#1f7a4d;
+    --int:#2f5fa8;
+    --dis:#d4a017;
+    --cha:#a83279;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(212,160,23,0.12) 0%, transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(15,42,74,0.1) 0%, transparent 45%),
+      var(--parchment);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(212,160,23,0.12) 0%, transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(15,42,74,0.1) 0%, transparent 45%),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, transparent 1px, transparent 2px),
+      linear-gradient(160deg, #f2e2b8, #ecd8ab 60%, #e8d29e);
+    color:var(--ink);
+    padding:28px 20px 60px 20px;
+  }
+
+  .wrap{ max-width:1160px; margin:0 auto; }
+
+  /* ---------- header / ship's log crumb ---------- */
+  .crumb{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:'Special Elite', cursive;
+    font-size:0.76rem;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+    letter-spacing:0.5px;
+  }
+  .crumb b{ color:var(--navy); }
+
+  .page-title{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:6px;
+  }
+  .page-title .emblem{
+    font-size:2.1rem;
+    filter:drop-shadow(1px 2px 0 rgba(0,0,0,0.2));
+  }
+  .page-title h1{
+    font-family:'Pirata One', cursive;
+    font-size:2.5rem;
+    font-weight:400;
+    margin:0;
+    color:var(--navy-deep);
+    letter-spacing:1px;
+    text-shadow:1px 1px 0 rgba(212,160,23,0.4);
+  }
+  .page-sub{
+    font-family:'Special Elite', cursive;
+    color:var(--ink-soft);
+    font-size:0.85rem;
+    margin:0 0 22px 0;
+  }
+
+  /* ---------- property row: bounty poster tags ---------- */
+  .prop-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-bottom:26px;
+    padding-bottom:20px;
+    border-bottom:2px dashed var(--border);
+  }
+  .prop{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--panel);
+    border:1.5px solid var(--border);
+    padding:5px 12px 5px 9px;
+    border-radius:4px;
+    font-size:0.78rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    box-shadow:1px 1px 0 rgba(0,0,0,0.08);
+  }
+  .prop .prop-icon{ font-size:0.85rem; }
+  .prop .prop-val{ color:var(--ink); font-weight:800; }
+  .prop.tag-level{ background:var(--navy); color:white; border-color:var(--navy-deep); }
+  .prop.tag-level .prop-val{ color:var(--gold-bright); }
+
+  /* ---------- widget grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap:16px;
+    margin-bottom:16px;
+  }
+  .col-4{ grid-column: span 4; }
+  .col-5{ grid-column: span 5; }
+  .col-7{ grid-column: span 7; }
+  .col-3{ grid-column: span 3; }
+  .col-12{ grid-column: span 12; }
+  @media (max-width:860px){
+    .col-4, .col-5, .col-7, .col-3{ grid-column: span 12; }
+  }
+
+  .widget{
+    background:var(--panel);
+    border:1.5px solid var(--border);
+    border-radius:6px;
+    padding:18px 18px 16px 18px;
+    box-shadow:2px 3px 0 rgba(0,0,0,0.08);
+    position:relative;
+  }
+  .widget::before{
+    content:'';
+    position:absolute;
+    inset:5px;
+    border:1px solid rgba(107,83,52,0.18);
+    border-radius:3px;
+    pointer-events:none;
+  }
+  .widget-title{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-family:'Special Elite', cursive;
+    font-size:0.74rem;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+
+  /* ---------- hero: bounty poster panel ---------- */
+  .hero-widget{
+    background:
+      linear-gradient(180deg, rgba(15,42,74,0.03), transparent),
+      var(--panel);
+    border-color:var(--navy);
+  }
+  .hero-level-row{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:2px;
+  }
+  .hero-level-num{
+    font-family:'Pirata One', cursive;
+    font-size:3.1rem;
+    font-weight:400;
+    color:var(--navy-deep);
+    line-height:1;
+  }
+  .hero-level-label{
+    font-family:'Special Elite', cursive;
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .hero-title{
+    font-family:'Special Elite', cursive;
+    font-size:0.95rem;
+    color:var(--red);
+    margin-bottom:14px;
+  }
+  .bounty-line{
+    font-family:'Special Elite', cursive;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .bounty-line .bounty-amt{
+    color:var(--gold);
+    font-weight:700;
+    -webkit-text-stroke:0.4px var(--ink);
+  }
+  .xp-track{
+    height:11px;
+    background:var(--panel-soft);
+    border:1px solid var(--border);
+    border-radius:3px;
+    overflow:hidden;
+    margin-bottom:6px;
+  }
+  .xp-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--gold), var(--gold-bright));
+    transition:width 0.5s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .xp-caption{
+    display:flex;
+    justify-content:space-between;
+    font-size:0.72rem;
+    font-weight:600;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- streak / log stamps ---------- */
+  .streak-num{
+    font-family:'Pirata One', cursive;
+    font-size:2.5rem;
+    color:var(--red);
+    line-height:1;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .streak-caption{
+    font-size:0.76rem;
+    color:var(--ink-soft);
+    font-weight:500;
+    margin-top:6px;
+  }
+  .streak-dots{
+    display:flex;
+    gap:5px;
+    margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .streak-dot{
+    width:11px; height:11px;
+    border-radius:2px;
+    background:var(--panel-soft);
+    border:1px solid var(--border);
+  }
+  .streak-dot.on{ background:var(--gold); border-color:var(--gold); }
+
+  /* ---------- radar ---------- */
+  .radar-wrap{ display:flex; align-items:center; justify-content:center; }
+  #radarCanvas{ max-width:100%; }
+
+  /* ---------- stat bars ---------- */
+  .stat-bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:11px; }
+  .stat-bar-row:last-child{ margin-bottom:0; }
+  .stat-bar-label{
+    width:98px; flex-shrink:0;
+    font-size:0.75rem; font-weight:700; color:var(--ink-soft);
+  }
+  .stat-bar-track{
+    flex:1; height:8px; background:var(--panel-soft);
+    border:1px solid var(--border); border-radius:3px; overflow:hidden;
+  }
+  .stat-bar-fill{ height:100%; transition:width 0.4s ease; }
+  .stat-bar-num{ width:22px; text-align:right; font-size:0.75rem; font-weight:800; color:var(--ink); flex-shrink:0; }
+
+  /* ---------- quest log (ship's log entries) ---------- */
+  .db-toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .db-count{
+    font-size:0.76rem; color:var(--ink-soft); font-weight:700;
+    background:var(--panel-soft); border:1px solid var(--border);
+    padding:3px 10px; border-radius:4px;
+  }
+  .quest-group-header{
+    display:flex; align-items:center; gap:8px;
+    font-family:'Special Elite', cursive;
+    font-size:0.82rem; color:var(--navy-deep);
+    padding:10px 4px 8px 4px; margin-top:6px;
+    border-bottom:1px solid var(--border);
+  }
+  .quest-group-header:first-child{ margin-top:0; }
+  .quest-group-count{ font-size:0.68rem; color:var(--ink-faint); font-weight:600; margin-left:auto; }
+
+  .quest-row{
+    display:grid;
+    grid-template-columns: 26px 1fr auto auto;
+    align-items:center;
+    gap:12px;
+    padding:9px 8px;
+    border-radius:4px;
+    cursor:pointer;
+    border-bottom:1px dashed rgba(107,83,52,0.25);
+  }
+  .quest-row:hover{ background:rgba(212,160,23,0.08); }
+  .quest-row.done{ opacity:0.5; }
+  .quest-row.done .quest-name{ text-decoration:line-through; }
+
+  .quest-checkbox{
+    width:18px; height:18px; border-radius:3px;
+    border:1.8px solid var(--ink-faint);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; color:white; font-weight:800; background:var(--panel);
+  }
+  .quest-checkbox.checked{ background:var(--navy); border-color:var(--navy-deep); }
+  .quest-name{ font-size:0.85rem; font-weight:500; color:var(--ink); }
+  .quest-stat-tag{ font-size:0.66rem; font-weight:700; padding:3px 9px; border-radius:3px; white-space:nowrap; }
+  .quest-xp-tag{ font-size:0.68rem; font-weight:700; color:var(--gold); white-space:nowrap; }
+
+  /* ---------- calendar (log dates) ---------- */
+  .cal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .cal-header button{
+    background:var(--panel-soft); border:1px solid var(--border);
+    color:var(--ink-soft); font-weight:700; width:26px; height:26px;
+    border-radius:4px; cursor:pointer; font-size:0.85rem;
+  }
+  .cal-header button:hover{ background:var(--gold-bright); color:var(--ink); }
+  .cal-month-label{ font-family:'Special Elite', cursive; font-size:0.82rem; color:var(--navy-deep); }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; }
+  .cal-dow{ font-size:0.62rem; font-weight:700; color:var(--ink-faint); padding-bottom:4px; }
+  .cal-day{
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+    border-radius:4px; font-size:0.74rem; font-weight:600; cursor:pointer;
+    color:var(--ink); position:relative;
+  }
+  .cal-day:hover{ background:rgba(212,160,23,0.15); }
+  .cal-day.empty{ cursor:default; }
+  .cal-day.empty:hover{ background:none; }
+  .cal-day.today{ background:var(--navy); color:var(--gold-bright); }
+  .cal-day.selected:not(.today){ background:rgba(212,160,23,0.3); }
+  .cal-day.has-note::after{
+    content:''; position:absolute; bottom:2px;
+    width:3.5px; height:3.5px; border-radius:50%; background:var(--red);
+  }
+  .cal-day.today.has-note::after{ background:var(--gold-bright); }
+
+  /* ---------- notes (log entries) ---------- */
+  .notes-date-label{ font-size:0.76rem; font-weight:700; color:var(--ink-soft); margin-bottom:10px; }
+  .note-input-row{ display:flex; gap:7px; margin-bottom:12px; }
+  .note-input-row input{
+    flex:1; border:1.5px solid var(--border); border-radius:4px;
+    padding:8px 11px; font-family:'Inter',sans-serif; font-size:0.82rem;
+    outline:none; background:var(--panel-soft); color:var(--ink);
+  }
+  .note-input-row input:focus{ border-color:var(--navy); }
+  .note-input-row button{
+    background:var(--navy); color:var(--gold-bright); border:none;
+    border-radius:4px; padding:0 14px; font-weight:700; cursor:pointer; font-size:0.8rem;
+  }
+  .note-input-row button:hover{ background:var(--navy-deep); }
+
+  .notes-list{ display:flex; flex-direction:column; gap:6px; max-height:170px; overflow-y:auto; }
+  .note-item{
+    background:var(--panel-soft); border-left:3px solid var(--red);
+    border-radius:0 4px 4px 0; padding:7px 10px; font-size:0.8rem;
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+  }
+  .note-item .note-x{ cursor:pointer; color:var(--ink-faint); font-weight:700; flex-shrink:0; }
+  .note-item .note-x:hover{ color:var(--red); }
+  .no-notes{ font-size:0.78rem; color:var(--ink-faint); font-style:italic; padding:6px 0; }
+
+  ::-webkit-scrollbar{ width:5px; }
+  ::-webkit-scrollbar-thumb{ background:var(--border); border-radius:10px; }
+
+  /* ---------- level up toast (wanted poster stamp) ---------- */
+  .levelup-toast{
+    position:fixed; bottom:24px; left:50%;
+    transform:translateX(-50%) translateY(20px) rotate(-2deg);
+    background:var(--navy); color:var(--gold-bright);
+    padding:12px 22px; border-radius:4px;
+    font-family:'Special Elite', cursive; font-size:0.85rem;
+    display:flex; align-items:center; gap:10px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+    border:2px solid var(--gold);
+    opacity:0; pointer-events:none;
+    transition:all 0.35s cubic-bezier(.2,.9,.3,1.2);
+    z-index:999;
+  }
+  .levelup-toast.show{ opacity:1; transform:translateX(-50%) translateY(0) rotate(-2deg); }
+  .levelup-toast .lu-badge{
+    background:var(--red); color:white;
+    padding:2px 9px; border-radius:3px; font-weight:800; font-size:0.78rem;
+  }
+
+  /* ---------- crew hype toast (top-right, quick pop per task) ---------- */
+  .crew-toast{
+    position:fixed;
+    top:20px;
+    right:20px;
+    max-width:260px;
+    background:var(--panel);
+    border:1.5px solid var(--border);
+    border-left:4px solid var(--navy);
+    border-radius:6px;
+    padding:10px 14px;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    box-shadow:2px 4px 12px rgba(0,0,0,0.15);
+    opacity:0;
+    transform:translateX(20px);
+    pointer-events:none;
+    transition:all 0.3s cubic-bezier(.2,.9,.3,1.2);
+    z-index:998;
+  }
+  .crew-toast.show{
+    opacity:1;
+    transform:translateX(0);
+  }
+  .crew-toast .crew-icon{ width:34px; height:34px; flex-shrink:0; }
+  .crew-toast .crew-icon svg{ width:100%; height:100%; display:block; }
+  .crew-toast .crew-name{
+    font-family:'Special Elite', cursive;
+    font-size:0.72rem;
+    color:var(--navy-deep);
+    margin-bottom:2px;
+  }
+  .crew-toast .crew-line{
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    line-height:1.3;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="crumb">☠️ <b>East Blue</b> / Grand Line Journey / <b>Ship's Log</b></div>
+  <div class="page-title">
+    <span class="emblem">☠️</span>
+    <h1>Grand Line Log</h1>
+  </div>
+  <p class="page-sub">Chart your daily voyage. Every quest completed raises your bounty.</p>
+
+  <div class="prop-row">
+    <div class="prop tag-level"><span class="prop-icon">⭐</span><span>Rank</span> <span class="prop-val" id="propLevel">1</span></div>
+    <div class="prop"><span class="prop-icon">🔥</span><span>Streak</span> <span class="prop-val" id="propStreak">0 days</span></div>
+    <div class="prop"><span class="prop-icon">✅</span><span>Today</span> <span class="prop-val" id="propToday">0/11</span></div>
+    <div class="prop"><span class="prop-icon">🏴‍☠️</span><span>Title</span> <span class="prop-val" id="propTitle">Rookie Pirate</span></div>
+    <div class="prop" id="syncBtn" style="cursor:pointer; background:var(--navy); color:white; border-color:var(--navy-deep);"><span class="prop-icon">📡</span><span>Get Sync Code</span></div>
+  </div>
+
+  <div id="syncModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:var(--panel); border:1.5px solid var(--border); border-radius:8px; padding:22px; max-width:480px; width:100%; box-shadow:0 8px 30px rgba(0,0,0,0.3);">
+      <div style="font-family:'Special Elite', cursive; font-size:0.95rem; color:var(--navy-deep); margin-bottom:10px;">📡 Your Sync Code</div>
+      <p style="font-size:0.8rem; color:var(--ink-soft); margin:0 0 10px 0;">Copy this and send it to Prince so it shows up on the Us dashboard. Generate a fresh one anytime your progress changes.</p>
+      <textarea id="syncCodeText" readonly style="width:100%; height:90px; font-family:monospace; font-size:0.72rem; padding:8px; border:1px solid var(--border); border-radius:4px; resize:none; background:var(--panel-soft); color:var(--ink);"></textarea>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button id="syncCopyBtn" style="flex:1; padding:9px; border-radius:4px; border:1.5px solid var(--navy); background:var(--navy); color:white; font-weight:700; cursor:pointer;">Copy Code</button>
+        <button id="syncCloseBtn" style="padding:9px 16px; border-radius:4px; border:1.5px solid var(--border); background:var(--panel); color:var(--ink-soft); font-weight:600; cursor:pointer;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- BOUNTY / LEVEL HERO -->
+    <div class="widget hero-widget col-5">
+      <div class="widget-title">🗺️ Wanted Status</div>
+      <div class="hero-level-row">
+        <span class="hero-level-num" id="heroLevel">1</span>
+        <span class="hero-level-label">Rank</span>
+      </div>
+      <div class="hero-title" id="heroTitle">Rookie Pirate</div>
+      <div class="bounty-line">💰 Bounty: <span class="bounty-amt" id="bountyAmt">0</span> Berries</div>
+      <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+      <div class="xp-caption">
+        <span id="xpText">0 / 100 XP</span>
+        <span id="xpToNext">100 to next rank</span>
+      </div>
+    </div>
+
+    <!-- STREAK -->
+    <div class="widget col-3">
+      <div class="widget-title">🔥 Voyage Streak</div>
+      <div class="streak-num"><span id="streakNum">0</span><span style="font-size:1rem;">days</span></div>
+      <div class="streak-caption">Complete every quest to keep sailing</div>
+      <div class="streak-dots" id="streakDots"></div>
+    </div>
+
+    <!-- RADAR STATS -->
+    <div class="widget col-4">
+      <div class="widget-title">📊 Crew Stat Sheet</div>
+      <div class="radar-wrap">
+        <canvas id="radarCanvas" width="220" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- QUEST LOG -->
+    <div class="widget col-7">
+      <div class="db-toolbar">
+        <div class="widget-title" style="margin-bottom:0;">📜 Ship's Log — Today</div>
+        <div class="db-count" id="dbCount">0/11 done</div>
+      </div>
+      <div id="questContainer"></div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-5">
+      <div class="widget" style="margin-bottom:16px;">
+        <div class="widget-title">📈 Stat Progress</div>
+        <div id="statBars"></div>
+      </div>
+
+      <div class="widget" style="margin-bottom:16px;">
+        <div class="cal-header">
+          <button id="prevMonth">‹</button>
+          <div class="cal-month-label" id="calMonthLabel"></div>
+          <button id="nextMonth">›</button>
+        </div>
+        <div class="cal-grid" id="calDow"></div>
+        <div class="cal-grid" id="calDays" style="margin-top:3px;"></div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">💌 Captain's Notes</div>
+        <div class="notes-date-label" id="notesDateLabel"></div>
+        <div class="note-input-row">
+          <input type="text" id="noteInput" placeholder="Log a note & hit enter...">
+          <button id="noteAddBtn">Log</button>
+        </div>
+        <div class="notes-list" id="notesList"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="levelup-toast" id="levelUpToast">
+  <span class="lu-badge" id="luBadge">RANK 2</span>
+  <span id="luText">Bounty raised! You're now a Habit Hunter.</span>
+</div>
+
+<div class="crew-toast" id="crewToast">
+  <span class="crew-icon" id="crewIcon"></span>
+  <div>
+    <div class="crew-name" id="crewName">Luffy</div>
+    <div class="crew-line" id="crewLine">That's the spirit! Onward!</div>
+  </div>
+</div>
+
+<script>
+/* ---------------- DATA (crochet removed) ---------------- */
+const TASKS = [
+  { group: "🌅 Morning", items: [
+    { text:"Wake up between 5:00–6:00 AM", stat:"DIS", xp:10 },
+    { text:"Soak chia seeds in water", stat:"VIT", xp:5 },
+    { text:"Shower & skincare routine", stat:"CHA", xp:10 }
+  ]},
+  { group: "🪢 Morning Workout", items: [
+    { text:"Complete 1,000 skips", stat:"STR", xp:20 }
+  ]},
+  { group: "🍽️ Breakfast — 11:00 AM", items: [
+    { text:"Eat protein + fruit meal", stat:"VIT", xp:10 }
+  ]},
+  { group: "📖 Personal Growth", items: [
+    { text:"Read a book", stat:"INT", xp:15 },
+    { text:"Learn one new skill", stat:"INT", xp:15 }
+  ]},
+  { group: "🍛 Lunch — 1:00 PM", items: [
+    { text:"Eat protein + fruit meal", stat:"VIT", xp:10 }
+  ]},
+  { group: "🗣️ Language Learning", items: [
+    { text:"Spend 30–60 min learning a language", stat:"INT", xp:15 }
+  ]},
+  { group: "🚶 Movement", items: [
+    { text:"Reach 10,000 steps", stat:"STR", xp:15 }
+  ]},
+  { group: "🏋️ Evening Workout", items: [
+    { text:"Strength training", stat:"STR", xp:15 },
+    { text:"100 jumping jacks", stat:"STR", xp:10 },
+    { text:"Burpees", stat:"STR", xp:10 },
+    { text:"20 in-and-outs", stat:"STR", xp:10 },
+    { text:"25–50 squats", stat:"STR", xp:10 }
+  ]},
+  { group: "🍽️ Dinner — 7:00 PM", items: [
+    { text:"Eat protein + fruit meal", stat:"VIT", xp:10 }
+  ]},
+  { group: "😴 Sleep", items: [
+    { text:"Go to bed between 9:00–10:00 PM", stat:"DIS", xp:10 }
+  ]}
+];
+
+/* Crew hype lines — original lines written in each character's voice,
+   not quoted dialogue from the show/manga. Triggered per stat category.
+   Full Straw Hat crew + Boa Hancock. */
+const CREW_LINES = {
+  STR: [ // Luffy - workouts / haki
+    { name:"Luffy", icon:"luffy", line:"That's the spirit! Onward!" },
+    { name:"Luffy", icon:"luffy", line:"Whoa, you're getting strong!" },
+    { name:"Luffy", icon:"luffy", line:"Meat break after this one, promise!" }
+  ],
+  VIT: [ // Sanji & Chopper - meals / stamina
+    { name:"Sanji", icon:"sanji", line:"A proper meal fuels a proper day." },
+    { name:"Sanji", icon:"sanji", line:"Good, keep your strength up." },
+    { name:"Chopper", icon:"chopper", line:"Eating well keeps you healthy!" },
+    { name:"Chopper", icon:"chopper", line:"Your body will thank you for this." }
+  ],
+  INT: [ // Nami, Robin & Usopp - learning / devil fruit
+    { name:"Nami", icon:"nami", line:"Smart. Knowledge always pays off." },
+    { name:"Robin", icon:"robin", line:"Curiosity is never wasted time." },
+    { name:"Nami", icon:"nami", line:"That's an investment in yourself." },
+    { name:"Robin", icon:"robin", line:"Every page makes you harder to fool." },
+    { name:"Usopp", icon:"usopp", line:"See, this is how legends are built." }
+  ],
+  DIS: [ // Zoro & Franky - discipline / willpower
+    { name:"Zoro", icon:"zoro", line:"Discipline is a blade — keep it sharp." },
+    { name:"Zoro", icon:"zoro", line:"Good. Consistency is strength." },
+    { name:"Zoro", icon:"zoro", line:"Getting lost isn't an option. Stay the course." },
+    { name:"Franky", icon:"franky", line:"That's SUPER disciplined!" }
+  ],
+  CHA: [ // Boa Hancock & Brook - self-care / charm
+    { name:"Boa Hancock", icon:"hancock", line:"Taking care of yourself is never vanity." },
+    { name:"Boa Hancock", icon:"hancock", line:"You're glowing already." },
+    { name:"Boa Hancock", icon:"hancock", line:"A little self-love, well deserved." },
+    { name:"Brook", icon:"brook", line:"Wonderful! Though may I see your smile? Yohoho!" }
+  ]
+};
+function randomCrewLine(stat){
+  const pool = CREW_LINES[stat];
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/* Original SVG badge icons — simple symbolic marks, not reproductions of
+   any official artwork: straw hat, swords, tangerine, cigarette, etc. */
+const CREW_ICONS = {
+  luffy: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#e63946"/><ellipse cx="20" cy="17" rx="14" ry="6" fill="#fdf1d9"/><ellipse cx="20" cy="15" rx="8" ry="4" fill="#fdf1d9" stroke="#c9a969" stroke-width="1"/><rect x="12" y="14" width="16" height="3" fill="#c0272d"/></svg>`,
+  zoro: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#2f5f3a"/><line x1="10" y1="30" x2="30" y2="10" stroke="#e8e8e8" stroke-width="2.5"/><line x1="10" y1="10" x2="30" y2="30" stroke="#e8e8e8" stroke-width="2.5"/><line x1="20" y1="8" x2="20" y2="32" stroke="#e8e8e8" stroke-width="2.5"/><circle cx="20" cy="20" r="2.5" fill="#d4a017"/></svg>`,
+  nami: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#ff8c00"/><path d="M20 8 C28 12 30 20 20 32 C10 20 12 12 20 8 Z" fill="#ffb347"/><path d="M20 8 C28 12 30 20 20 32" fill="none" stroke="#c96a00" stroke-width="1.5"/><circle cx="20" cy="10" r="2" fill="#4a7c2f"/></svg>`,
+  usopp: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#8a5a2f"/><path d="M10 22 Q20 8 30 22" fill="none" stroke="#f0e4d0" stroke-width="2.5"/><circle cx="10" cy="22" r="2.5" fill="#f0e4d0"/><circle cx="30" cy="22" r="2.5" fill="#f0e4d0"/><circle cx="20" cy="26" r="3" fill="#f0e4d0"/></svg>`,
+  sanji: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#f4c430"/><path d="M11 17 Q20 8 29 17" fill="none" stroke="#2b1a0e" stroke-width="2.5"/><rect x="16" y="27" width="10" height="2.5" rx="1.2" fill="#e8e8e8"/><circle cx="27" cy="28.5" r="1.3" fill="#d4453a"/></svg>`,
+  chopper: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#d99a6c"/><ellipse cx="20" cy="24" rx="13" ry="10" fill="#ffe0c2"/><path d="M12 14 L8 4 L16 10 Z" fill="#8a5a2f"/><path d="M28 14 L32 4 L24 10 Z" fill="#8a5a2f"/><circle cx="20" cy="10" r="6" fill="#ff4d94"/></svg>`,
+  robin: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#5a3a6b"/><rect x="10" y="12" width="20" height="16" rx="1.5" fill="#f0e4d0"/><line x1="10" y1="16" x2="30" y2="16" stroke="#5a3a6b" stroke-width="1.2"/><line x1="10" y1="20" x2="30" y2="20" stroke="#5a3a6b" stroke-width="1.2"/><line x1="10" y1="24" x2="30" y2="24" stroke="#5a3a6b" stroke-width="1.2"/></svg>`,
+  franky: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#4a90d9"/><rect x="13" y="10" width="14" height="8" rx="2" fill="#1a1a1a"/><circle cx="17" cy="14" r="2" fill="#7fd8ff"/><circle cx="23" cy="14" r="2" fill="#7fd8ff"/><rect x="15" y="24" width="10" height="10" rx="2" fill="#e63946"/></svg>`,
+  brook: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#2b2b2b"/><circle cx="20" cy="20" r="13" fill="#f5f0e6"/><circle cx="15" cy="18" r="2" fill="#2b2b2b"/><circle cx="25" cy="18" r="2" fill="#2b2b2b"/><path d="M14 25 Q20 30 26 25" fill="none" stroke="#2b2b2b" stroke-width="2"/></svg>`,
+  hancock: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#c94f7c"/><path d="M20 30 C10 22 12 12 20 16 C28 12 30 22 20 30 Z" fill="#ffd6e8"/></svg>`
+};
+
+/* One Piece stat renaming:
+   STR -> Haki (raw fighting power / grit)
+   VIT -> Stamina (endurance, food, body upkeep)
+   INT -> Devil Fruit (mind, knowledge, unique skill growth)
+   DIS -> Willpower (routine, discipline, resolve)
+   CHA -> Nakama (bonds, charm, self-care) */
+const STAT_META = {
+  STR:{ label:"Haki", color:"#c0272d", bg:"#f5d9d5" },
+  VIT:{ label:"Stamina", color:"#1f7a4d", bg:"#dcefdf" },
+  INT:{ label:"Devil Fruit", color:"#2f5fa8", bg:"#dde6f5" },
+  DIS:{ label:"Willpower", color:"#d4a017", bg:"#f6ecd0" },
+  CHA:{ label:"Nakama", color:"#a83279", bg:"#f2ddec" }
+};
+const STAT_ORDER = ["STR","VIT","INT","DIS","CHA"];
+
+const TITLES = [
+  { lv:1, title:"Rookie Pirate" },
+  { lv:3, title:"East Blue Sailor" },
+  { lv:6, title:"Grand Line Voyager" },
+  { lv:10, title:"Supernova" },
+  { lv:15, title:"Warlord Contender" },
+  { lv:20, title:"Yonko Candidate" },
+  { lv:30, title:"Pirate King" }
+];
+function titleForLevel(lv){
+  let t = TITLES[0].title;
+  for(const e of TITLES){ if(lv >= e.lv) t = e.title; }
+  return t;
+}
+function xpNeededForLevel(lv){ return 80 + (lv-1) * 25; }
+
+/* ---------------- STATE ---------------- */
+const STORAGE_KEY = "glowup_onepiece_state_v1";
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {
+    doneByDate:{}, notesByDate:{}, totalXP:0,
+    stats:{STR:0,VIT:0,INT:0,DIS:0,CHA:0},
+    streak:0, lastCompletionDate:null
+  };
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+let state = loadState();
+
+function todayKey(){ return dateKey(new Date()); }
+function dateKey(d){
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+const TODAY_KEY = todayKey();
+let selectedDateKey = TODAY_KEY;
+let calViewDate = new Date();
+
+function getLevelInfo(totalXP){
+  let level=1, remaining=totalXP;
+  while(remaining >= xpNeededForLevel(level)){ remaining -= xpNeededForLevel(level); level++; }
+  return { level, xpIntoLevel:remaining, xpForNext:xpNeededForLevel(level) };
+}
+
+function taskId(gi,ii){ return `g${gi}_i${ii}`; }
+function totalTaskCount(){ return TASKS.reduce((s,g)=>s+g.items.length,0); }
+
+/* ---------------- QUEST LOG RENDER ---------------- */
+function renderQuests(){
+  const container = document.getElementById('questContainer');
+  container.innerHTML = '';
+  const doneSet = new Set(state.doneByDate[TODAY_KEY] || []);
+
+  TASKS.forEach((group, gi) => {
+    const header = document.createElement('div');
+    header.className = 'quest-group-header';
+    const doneInGroup = group.items.filter((_,ii)=>doneSet.has(taskId(gi,ii))).length;
+    header.innerHTML = `${group.group} <span class="quest-group-count">${doneInGroup}/${group.items.length}</span>`;
+    container.appendChild(header);
+
+    group.items.forEach((item, ii) => {
+      const id = taskId(gi, ii);
+      const isDone = doneSet.has(id);
+      const meta = STAT_META[item.stat];
+
+      const row = document.createElement('div');
+      row.className = 'quest-row' + (isDone ? ' done' : '');
+      row.innerHTML = `
+        <div class="quest-checkbox ${isDone ? 'checked' : ''}">${isDone ? '✓' : ''}</div>
+        <div class="quest-name">${item.text}</div>
+        <div class="quest-stat-tag" style="background:${meta.bg}; color:${meta.color};">${meta.label}</div>
+        <div class="quest-xp-tag">+${item.xp}</div>
+      `;
+      row.addEventListener('click', () => toggleQuest(gi, ii, id));
+      container.appendChild(row);
+    });
+  });
+
+  document.getElementById('dbCount').textContent = `${doneSet.size}/${totalTaskCount()} done`;
+  updateDashboard();
+}
+
+function toggleQuest(gi, ii, id){
+  if(!state.doneByDate[TODAY_KEY]) state.doneByDate[TODAY_KEY] = [];
+  const arr = state.doneByDate[TODAY_KEY];
+  const idx = arr.indexOf(id);
+  const item = TASKS[gi].items[ii];
+  const beforeLevel = getLevelInfo(state.totalXP).level;
+
+  if(idx === -1){
+    arr.push(id);
+    state.totalXP += item.xp;
+    state.stats[item.stat] += 1;
+    updateStreak();
+    showCrewLine(item.stat);
+  } else {
+    arr.splice(idx,1);
+    state.totalXP = Math.max(0, state.totalXP - item.xp);
+    state.stats[item.stat] = Math.max(0, state.stats[item.stat] - 1);
+  }
+
+  saveState();
+  renderQuests();
+  renderCalendar();
+
+  const afterLevel = getLevelInfo(state.totalXP).level;
+  if(afterLevel > beforeLevel) showLevelUp(afterLevel);
+}
+
+function updateStreak(){
+  const allDoneToday = (state.doneByDate[TODAY_KEY] || []).length === totalTaskCount();
+  if(allDoneToday && state.lastCompletionDate !== TODAY_KEY){
+    state.streak += 1;
+    state.lastCompletionDate = TODAY_KEY;
+  }
+}
+
+/* ---------------- DASHBOARD WIDGETS ---------------- */
+function updateDashboard(){
+  const { level, xpIntoLevel, xpForNext } = getLevelInfo(state.totalXP);
+  const pct = Math.min(100, Math.round((xpIntoLevel / xpForNext) * 100));
+  const title = titleForLevel(level);
+
+  document.getElementById('propLevel').textContent = level;
+  document.getElementById('propStreak').textContent = `${state.streak} days`;
+  document.getElementById('propToday').textContent = `${(state.doneByDate[TODAY_KEY]||[]).length}/${totalTaskCount()}`;
+  document.getElementById('propTitle').textContent = title;
+
+  document.getElementById('heroLevel').textContent = level;
+  document.getElementById('heroTitle').textContent = title;
+  document.getElementById('bountyAmt').textContent = (state.totalXP * 10000).toLocaleString();
+  document.getElementById('xpFill').style.width = pct + '%';
+  document.getElementById('xpText').textContent = `${xpIntoLevel} / ${xpForNext} XP`;
+  document.getElementById('xpToNext').textContent = `${xpForNext - xpIntoLevel} to next rank`;
+
+  document.getElementById('streakNum').textContent = state.streak;
+  renderStreakDots();
+
+  renderStatBars();
+  renderRadar();
+}
+
+function renderStreakDots(){
+  const wrap = document.getElementById('streakDots');
+  wrap.innerHTML = '';
+  const count = 14;
+  const on = Math.min(state.streak, count);
+  for(let i=0;i<count;i++){
+    const d = document.createElement('div');
+    d.className = 'streak-dot' + (i < on ? ' on' : '');
+    wrap.appendChild(d);
+  }
+}
+
+function renderStatBars(){
+  const wrap = document.getElementById('statBars');
+  wrap.innerHTML = '';
+  const maxVal = Math.max(5, ...STAT_ORDER.map(k => state.stats[k]));
+  STAT_ORDER.forEach(key => {
+    const meta = STAT_META[key];
+    const val = state.stats[key];
+    const pct = Math.min(100, (val / maxVal) * 100);
+    const row = document.createElement('div');
+    row.className = 'stat-bar-row';
+    row.innerHTML = `
+      <div class="stat-bar-label">${meta.label}</div>
+      <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${pct}%; background:${meta.color};"></div></div>
+      <div class="stat-bar-num">${val}</div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderRadar(){
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  const cx = w/2, cy = h/2 + 4;
+  const radius = Math.min(w,h)/2 - 34;
+  const n = STAT_ORDER.length;
+  const maxVal = Math.max(5, ...STAT_ORDER.map(k => state.stats[k]));
+
+  function pointFor(i, valueRatio){
+    const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+    return {
+      x: cx + Math.cos(angle) * radius * valueRatio,
+      y: cy + Math.sin(angle) * radius * valueRatio
+    };
+  }
+
+  ctx.strokeStyle = '#c9a969';
+  ctx.lineWidth = 1;
+  [0.25,0.5,0.75,1].forEach(r => {
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const p = pointFor(i % n, r);
+      if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);
+    }
+    ctx.stroke();
+  });
+
+  ctx.strokeStyle = 'rgba(107,83,52,0.3)';
+  for(let i=0;i<n;i++){
+    const p = pointFor(i,1);
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(p.x,p.y);
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+  STAT_ORDER.forEach((key,i) => {
+    const ratio = state.stats[key] / maxVal;
+    const p = pointFor(i, Math.max(0.06, ratio));
+    if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(15,42,74,0.18)';
+  ctx.fill();
+  ctx.strokeStyle = '#0f2a4a';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.font = '600 9px Inter, sans-serif';
+  STAT_ORDER.forEach((key,i) => {
+    const meta = STAT_META[key];
+    const ratio = state.stats[key] / maxVal;
+    const p = pointFor(i, Math.max(0.06, ratio));
+    ctx.fillStyle = meta.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+    ctx.fill();
+
+    const lp = pointFor(i, 1.24);
+    ctx.fillStyle = '#6b5334';
+    ctx.textAlign = lp.x > cx+2 ? 'left' : (lp.x < cx-2 ? 'right' : 'center');
+    ctx.textBaseline = lp.y > cy+2 ? 'top' : (lp.y < cy-2 ? 'bottom' : 'middle');
+    ctx.fillText(meta.label, lp.x, lp.y);
+  });
+}
+
+let crewToastTimer = null;
+function showCrewLine(stat){
+  const entry = randomCrewLine(stat);
+  document.getElementById('crewIcon').innerHTML = CREW_ICONS[entry.icon] || '';
+  document.getElementById('crewName').textContent = entry.name;
+  document.getElementById('crewLine').textContent = entry.line;
+  const toast = document.getElementById('crewToast');
+  toast.classList.add('show');
+  if(crewToastTimer) clearTimeout(crewToastTimer);
+  crewToastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+function showLevelUp(newLevel){
+  document.getElementById('luBadge').textContent = `RANK ${newLevel}`;
+  document.getElementById('luText').textContent = `Bounty raised! You're now a ${titleForLevel(newLevel)}.`;
+  const toast = document.getElementById('levelUpToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+/* ---------------- CALENDAR ---------------- */
+const DOW = ['S','M','T','W','T','F','S'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function renderCalendarDow(){
+  const dowEl = document.getElementById('calDow');
+  dowEl.innerHTML = '';
+  DOW.forEach(d=>{
+    const el = document.createElement('div');
+    el.className = 'cal-dow';
+    el.textContent = d;
+    dowEl.appendChild(el);
+  });
+}
+
+function renderCalendar(){
+  const year = calViewDate.getFullYear();
+  const month = calViewDate.getMonth();
+  document.getElementById('calMonthLabel').textContent = `${MONTHS[month]} ${year}`;
+
+  const daysEl = document.getElementById('calDays');
+  daysEl.innerHTML = '';
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+
+  for(let i=0;i<firstDay;i++){
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    daysEl.appendChild(empty);
+  }
+
+  for(let day=1; day<=daysInMonth; day++){
+    const d = new Date(year, month, day);
+    const key = dateKey(d);
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    if(key === TODAY_KEY) el.classList.add('today');
+    if(key === selectedDateKey && key !== TODAY_KEY) el.classList.add('selected');
+    if(state.notesByDate[key] && state.notesByDate[key].length > 0) el.classList.add('has-note');
+    el.textContent = day;
+    el.addEventListener('click', () => {
+      selectedDateKey = key;
+      renderCalendar();
+      renderNotes();
+    });
+    daysEl.appendChild(el);
+  }
+}
+
+document.getElementById('prevMonth').addEventListener('click', ()=>{
+  calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth()-1, 1);
+  renderCalendar();
+});
+document.getElementById('nextMonth').addEventListener('click', ()=>{
+  calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth()+1, 1);
+  renderCalendar();
+});
+
+/* ---------------- NOTES ---------------- */
+function formatDateLabel(key){
+  const [y,m,d] = key.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  return dt.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+}
+
+function renderNotes(){
+  document.getElementById('notesDateLabel').textContent =
+    (selectedDateKey === TODAY_KEY ? "Today · " : "") + formatDateLabel(selectedDateKey);
+
+  const listEl = document.getElementById('notesList');
+  listEl.innerHTML = '';
+  const notes = state.notesByDate[selectedDateKey] || [];
+
+  if(notes.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'no-notes';
+    empty.textContent = 'No entries logged yet ⚓';
+    listEl.appendChild(empty);
+    return;
+  }
+
+  notes.forEach((note, idx) => {
+    const item = document.createElement('div');
+    item.className = 'note-item';
+    item.innerHTML = `<span>${escapeHtml(note)}</span><span class="note-x" title="Delete">✕</span>`;
+    item.querySelector('.note-x').addEventListener('click', () => {
+      state.notesByDate[selectedDateKey].splice(idx,1);
+      saveState();
+      renderNotes();
+      renderCalendar();
+    });
+    listEl.appendChild(item);
+  });
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function addNote(){
+  const input = document.getElementById('noteInput');
+  const val = input.value.trim();
+  if(!val) return;
+  if(!state.notesByDate[selectedDateKey]) state.notesByDate[selectedDateKey] = [];
+  state.notesByDate[selectedDateKey].push(val);
+  saveState();
+  input.value = '';
+  renderNotes();
+  renderCalendar();
+}
+
+document.getElementById('noteAddBtn').addEventListener('click', addNote);
+document.getElementById('noteInput').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') addNote(); });
+
+/* ---------------- SYNC CODE (share progress with partner) ---------------- */
+function buildSyncPayload(){
+  const { level } = getLevelInfo(state.totalXP);
+  return {
+    who: "MJ",
+    theme: "onepiece",
+    level,
+    title: titleForLevel(level),
+    totalXP: state.totalXP,
+    streak: state.streak,
+    stats: state.stats,
+    today: `${(state.doneByDate[TODAY_KEY]||[]).length}/${totalTaskCount()}`,
+    ts: Date.now()
+  };
+}
+function encodeSyncCode(obj){ return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); }
+
+document.getElementById('syncBtn').addEventListener('click', () => {
+  const code = encodeSyncCode(buildSyncPayload());
+  document.getElementById('syncCodeText').value = code;
+  document.getElementById('syncModal').style.display = 'flex';
+});
+document.getElementById('syncCloseBtn').addEventListener('click', () => {
+  document.getElementById('syncModal').style.display = 'none';
+});
+document.getElementById('syncCopyBtn').addEventListener('click', () => {
+  const ta = document.getElementById('syncCodeText');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const btn = document.getElementById('syncCopyBtn');
+    const old = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(()=>{ btn.textContent = old; }, 1500);
+  }).catch(()=>{ document.execCommand('copy'); });
+});
+
+/* ---------------- INIT ---------------- */
+renderCalendarDow();
+renderCalendar();
+renderNotes();
+renderQuests();
+</script>
+</body>
+</html>
